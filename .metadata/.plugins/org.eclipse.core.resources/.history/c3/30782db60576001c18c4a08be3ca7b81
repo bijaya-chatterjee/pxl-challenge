@@ -1,0 +1,10 @@
+package com.challenge.crawler.repo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.challenge.crawler.model.Automobile;
+
+public interface AutomobileRepository extends JpaRepository<Automobile, Integer> {
+
+	Automobile findByNameIgnorecase(String name);
+}

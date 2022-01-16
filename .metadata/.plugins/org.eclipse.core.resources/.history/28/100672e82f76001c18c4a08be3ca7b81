@@ -1,0 +1,112 @@
+package com.challenge.crawler.service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.challenge.crawler.dto.AutomobileInfo;
+import com.challenge.crawler.model.Automobile;
+
+@Service
+public class MyWebCrawler {
+	
+	private static String URL = "https://en.wikipedia.org/wiki/List_of_automobile_sales_by_model";
+	
+	public List<AutomobileInfo> getAutomobileDetails()
+	{
+		List<AutomobileInfo> carList = new ArrayList<AutomobileInfo>();
+		try {
+			Document doc = Jsoup.connect(URL).get();
+			Elements tables = doc.select("table > tbody");
+			for(Element table : tables)
+			{
+				Elements rows = table.select("tr");
+				for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it.
+					Element row = rows.get(i);
+					carList.add(this.crawlRow(row));						
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("For '" + URL + "': " + e.getMessage());
+		}
+		return carList;
+	}
+	
+	
+	private List<String> getAutomobileNames(Element row)
+	{
+		String car = null;
+		List<String> carList = new ArrayList<String>();
+		Elements ths = row.select("th");
+		if (ths != null && ths.size() == 1) {
+			Element carName = ths.get(0);
+			car = carName.text();
+		}
+		if (ths != null && ths.size() == 2) {
+			Element carName = ths.get(1);
+			car = carName.text();
+		}
+		carList.add(car);
+		return carList;
+	}
+	
+	private AutomobileInfo crawlRow(Element row)
+	{
+		String car = null;String manufacturer = null;
+		AutomobileInfo carDetails = new AutomobileInfo();
+		Elements ths = row.select("th");
+		if (ths != null && ths.size() == 1) {
+			Element carName = ths.get(0);
+			car = carName.text();
+		}
+		if (ths != null && ths.size() == 2) {
+			Element carName = ths.get(1);
+			car = carName.text();
+			manufacturer = ths.get(0).text();
+		}
+
+		carDetails.setName(car);
+		if(!StringUtils.isEmpty(manufacturer))
+		{
+			carDetails.setManufacturer(manufacturer);
+		}
+		Elements images = row.select("td > div.center > div.floatnone > a > img");
+		for (Element a : images) {
+			carDetails.setImageSource(a.attr("src"));
+		}
+
+		Elements tds = row.select("td");
+		if (tds != null && tds.size() == 3) {
+			for (int k = 0; k < tds.size(); k++) {
+				carDetails.setProdYear(tds.get(1).text());
+				carDetails.setSales(tds.get(2).text());
+			}
+		}
+		if (tds != null && tds.size() == 4) {
+			for (int k = 0; k < tds.size(); k++) {
+				carDetails.setProdYear(tds.get(1).text());
+				carDetails.setSales(tds.get(2).text());
+				carDetails.setAssembly(tds.get(3).text());
+			}
+		}
+		if (tds != null && tds.size() == 5) {
+			for (int k = 0; k < tds.size(); k++) {
+				carDetails.setProdYear(tds.get(1).text());
+				carDetails.setSales(tds.get(2).text());
+				carDetails.setNotes(tds.get(3).text());
+				carDetails.setAssembly(tds.get(4).text());
+			}
+		}
+		return carDetails;
+	}
+	
+	
+
+}

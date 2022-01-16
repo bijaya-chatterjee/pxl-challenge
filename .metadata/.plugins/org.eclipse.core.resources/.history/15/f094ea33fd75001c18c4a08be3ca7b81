@@ -1,0 +1,59 @@
+package com.challenge.crawler.component;
+
+import java.io.IOException;
+import java.util.HashSet;
+
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
+
+@Component
+public class WebCrawler {
+
+	private HashSet<String> urlLink;
+
+	public WebCrawler() {
+		urlLink = new HashSet<String>();
+	}
+
+	public void getPageLinks(String URL) {
+
+		if (!urlLink.contains(URL)) {
+			try {
+				if (urlLink.add(URL)) {
+					System.out.println(URL);
+				}
+				Document doc = Jsoup.connect(URL).get();
+				Element table = doc.select("table > tbody").get(1);
+				Elements rows = table.select("tr");
+				for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it.
+					Element row = rows.get(i);
+					System.out.println("row " + row);
+					Elements cols = row.select("th");
+					for(Element col : cols)
+					{
+						System.out.println("col ::"+col.text());
+					}
+				}
+				
+				Elements images = table.select("tr > td > div.center > div.floatnone > a > img");
+				for(Element a : images)
+				{
+					System.out.println(" a is :: "+a.attr("src"));
+				}
+				
+				Elements carNames = table.select("tr > td > div.center > div.floatnone > a > img");
+				for(Element a : images)
+				{
+					System.out.println(" a is :: "+a.attr("src"));
+				}
+			} catch (IOException e) {
+				System.err.println("For '" + URL + "': " + e.getMessage());
+			}
+		}
+	}
+
+}

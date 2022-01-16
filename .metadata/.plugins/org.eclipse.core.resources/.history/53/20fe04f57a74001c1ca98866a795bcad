@@ -1,0 +1,87 @@
+package com.challenge.crawler.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.challenge.crawler.dto.AutomobileInfo;
+import com.challenge.crawler.model.Automobile;
+import com.challenge.crawler.repo.AutomobileRepository;
+
+@Service
+public class MainService {
+	
+	@Autowired
+	AutomobileRepository autoRepo;
+	
+	
+	public void save(Automobile auto)
+	{
+		this.autoRepo.save(auto);
+	}
+	
+	public void save(List<Automobile> autoList)
+	{
+		this.autoRepo.saveAll(autoList);
+	}
+	
+	public List<Automobile> fetchAllAutombiles()
+	{
+		List<Automobile> autoList = this.autoRepo.findAll();
+		return autoList;
+	}
+	
+	public List<AutomobileInfo> fetchNames()
+	{
+		List<AutomobileInfo> autoNamesList = new ArrayList<>();
+		List<Automobile> autoList = this.autoRepo.findAll();
+		autoNamesList = autoList.stream().map(x ->{			
+			AutomobileInfo aa = new AutomobileInfo();
+			aa.setName(x.getName());
+			aa.setId(x.getId());
+			return aa;
+		}).collect(Collectors.toList());
+		return autoNamesList;
+	}
+	
+	
+	public AutomobileInfo fetchCarDetails(Integer id)
+	{
+		AutomobileInfo auto = new AutomobileInfo();
+		if(id != null && id != 0)
+		{
+			Optional<Automobile> automobile = this.autoRepo.findById(id);
+			if(automobile != null && automobile.isPresent())
+			{
+				Automobile aa = automobile.get();
+				auto.setId(aa.getId());
+				auto.setName(aa.getName());
+				auto.setProdYear(aa.getProdYear());
+				auto.setSales(aa.getSales());
+				if(!StringUtils.isEmpty(aa.getManufacturer()))
+					auto.setManufacturer(aa.getManufacturer());
+				if(!StringUtils.isEmpty(aa.getNotes()))
+					auto.setNotes(aa.getNotes());
+			}	
+		}			
+		return auto;
+	}
+	
+	
+	/*
+	 * private List<AutomobileInfo> buildAutomobileDTO(List<Automobile> autoList) {
+	 * List<AutomobileInfo> autoInfoList = null; if(autoList != null &&
+	 * autoList.size() > 0) { autoInfoList = autoList.stream().map(x -> {
+	 * AutomobileInfo a = new AutomobileInfo(); a.setAssembly(null);
+	 * a.setManufacturer(null); a.setName(null); return a;
+	 * }).collect(Collectors.toList()); }
+	 * 
+	 * return autoInfoList; }
+	 */
+
+}

@@ -1,0 +1,19 @@
+var AutoView = {
+	
+	data:{
+		
+		
+	},
+	methods:{
+		
+	},
+	mounted: function(){
+		
+	},
+	created: function()
+	{
+		
+	}
+	
+	
+};

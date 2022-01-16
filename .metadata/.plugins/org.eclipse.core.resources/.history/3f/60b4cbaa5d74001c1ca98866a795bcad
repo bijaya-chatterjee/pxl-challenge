@@ -1,0 +1,45 @@
+package com.challenge.crawler.utility;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class WebCrawler {
+	
+	private HashSet<String> urlLink;   
+    // initialize set using constructor  
+		public WebCrawlerExample() {   
+		    urlLink = new HashSet<String>();   
+		    }   
+    // create getPageLink() method that finds all the page link in the given URL  
+	public void getPageLinks(String URL) {
+
+		// we use the conditional statement to check whether we have already crawled the
+		// URL or not.
+		if (!urlLink.contains(URL)) {
+			try {
+				// if the URL is not present in the set, we add it to the set
+				if (urlLink.add(URL)) {
+					System.out.println(URL);
+				}
+				Document doc = Jsoup.connect(URL).get();				
+				Element table = doc.select("table").get(1);
+				Elements rows = table.select("tr");
+				for (int i = 1; i < rows.size(); i++) { //first row is the col names so skip it.
+				    Element row = rows.get(i);
+				    System.out.println("row "+row);
+				    Elements cols = row.select("th");
+				    for(int j=0; j < cols.size(); j++)
+				    {
+				    	System.out.println(cols.get(j).text());
+				    }
+				   // Elements colrw = cols.get(1).getAllElements();
+				    //System.out.println(cols.get(0).text());
+				}				
+			}			
+			catch (IOException e) {
+				System.err.println("For '" + URL + "': " + e.getMessage());
+			}
+		}
+	} 
+
+}

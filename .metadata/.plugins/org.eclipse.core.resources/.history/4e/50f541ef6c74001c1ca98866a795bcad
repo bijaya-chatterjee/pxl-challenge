@@ -1,0 +1,5 @@
+package com.challenge.crawler.dto;
+
+public class AutomobileInfo {
+
+}

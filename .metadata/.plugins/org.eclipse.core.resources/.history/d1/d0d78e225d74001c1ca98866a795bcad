@@ -1,0 +1,5 @@
+package com.challenge.crawler.utility;
+
+public class WebCrawler {
+
+}

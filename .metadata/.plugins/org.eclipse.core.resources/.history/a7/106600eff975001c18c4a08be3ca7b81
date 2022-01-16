@@ -1,0 +1,26 @@
+package com.challenge.crawler.component;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Component
+@Slf4j
+public class StartWebCrawling {
+   
+    public static String URL = "https://en.wikipedia.org/wiki/List_of_automobile_sales_by_model";
+    
+    
+    
+    @Autowired
+    WebCrawler webcrawler;
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        log.info("Starting crawler");
+        webcrawler.getPageLinks(URL);
+    }
+}

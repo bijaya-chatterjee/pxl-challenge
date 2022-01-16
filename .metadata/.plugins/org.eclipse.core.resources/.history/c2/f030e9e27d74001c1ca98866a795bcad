@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Automobile Information</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  background-color:white;
+}
+
+.right {
+  right: 0;
+  background-color: white;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.centered img {
+  width: 150px;
+  border-radius: 50%;
+}
+
+</style>
+</head>
+<body>
+
+<div id="main-content">
+<div class="split left">
+  <div class="">    
+    <h2>Automobile List</h2>
+   		<ul id="auto-name">
+		  <li v-for="item in items" :key="item.id">
+		    <a href="#" v-on:click="fetchCarDetails($event)">{{item.name}}</a>
+		  </li>
+		</ul>
+  </div>
+</div>
+
+<div class="split right">
+  <div class="">
+    <h2>Details</h2>
+    
+  </div>
+</div>
+</div>
+<script>
+//AutoView.el = "#main-content";
+//var vApp = new Vue(AutoView);
+
+var vApp = new Vue({
+	el: "#main-content",
+	data:{
+		items:[],
+		counter:0,
+		details:[]
+	},
+	methods:{
+		fetchAllAutoNames: function()
+		{
+					var data = this.$data;
+				    var options = {
+		            		  headers: {'Content-Type': 'application/json'}
+		            		};
+					data.counter++;
+		            var url = "/api/fetch/names";            
+		            axios.get(url,options)
+		            .then(function(response) {
+						console.log(response);
+		            	data.items = response.data;
+		            })
+		            .catch(this.handleError)
+		            .then(function(response) {
+		            	data.counter--;
+		            });
+		},
+		fetchCarDetails: function(event)
+		{
+			var id =  event.currentTarget.id;
+			alert(id);
+			var data = this.$data;
+		    var options = {
+            		  headers: {'Content-Type': 'application/json'}
+            		};
+			data.counter++;
+            var url = "/api/details/"+id;            
+            axios.get(url,options)
+            .then(function(response) {
+				console.log(response);
+            })
+            .catch(this.handleError)
+            .then(function(response) {
+            	data.counter--;
+            });
+		}
+		
+	},
+	mounted: function(){
+		var me = this;
+		me.fetchAllAutoNames();
+		me.fetchCarDetails(1);
+	},
+	created: function()
+	{
+		
+	}
+});
+</script>
+</body>
+</html>

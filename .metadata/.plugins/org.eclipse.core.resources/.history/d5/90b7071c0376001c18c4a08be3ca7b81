@@ -1,0 +1,111 @@
+package com.challenge.crawler.component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
+
+@Component
+public class WebCrawler {
+
+	private HashSet<String> urlLink;
+
+	public WebCrawler() {
+		urlLink = new HashSet<String>();
+	}
+
+	public void getPageLinks(String URL) {
+
+		if (!urlLink.contains(URL)) {
+			try {
+				if (urlLink.add(URL)) {
+					System.out.println(URL);
+				}
+				Document doc = Jsoup.connect(URL).get();
+				Elements tables = doc.select("table > tbody");
+				for(Element table : tables)
+				{
+					Elements rows = table.select("tr");
+					System.out.println(" row in table ::"+rows.size());
+					for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it.
+						Element row = rows.get(i);
+						this.crawlRow(row);						
+					}
+				}
+			} catch (IOException e) {
+				System.err.println("For '" + URL + "': " + e.getMessage());
+			}
+		}
+	}
+	
+	private void crawlRow(Element row)
+	{
+		List<Map<String,String>> carList = new ArrayList<Map<String,String>>();
+		Map<String,String> carDetails = new HashMap<String,String>();
+		Elements ths = row.select("th");
+		System.out.println(ths.size());
+		if(ths != null && ths.size() == 1)
+		{
+			Element carName = ths.get(0);
+			carDetails.put("carName", carName.text());
+		}
+		if(ths != null && ths.size() == 2)
+		{
+			Element carName = ths.get(1);
+			carDetails.put("carName", carName.text());
+		}
+		
+		
+		Elements images = row.select("td > div.center > div.floatnone > a > img");
+		for(Element a : images)
+		{
+			carDetails.put("imgSrc", a.attr("src"));
+		}
+		
+		Elements tds = row.select("td");
+		System.out.println("table cols ::"+tds.size());
+		if(tds != null && tds.size() == 3)
+		{
+			for(int k = 0;k < tds.size();k++)
+			{
+				carDetails.put("prodYear", tds.get(1).text());
+				carDetails.put("sales", tds.get(2).text());
+			}
+		}
+		if(tds != null && tds.size() == 4)
+		{
+			for(int k = 0;k < tds.size();k++)
+			{
+				carDetails.put("prodYear", tds.get(1).text());
+				carDetails.put("sales", tds.get(2).text());
+				carDetails.put("assembly", tds.get(3).text());
+			}
+		}
+		if(tds != null && tds.size() == 5)
+		{
+			for(int k = 0;k < tds.size();k++)
+			{
+				carDetails.put("prodYear", tds.get(1).text());
+				carDetails.put("sales", tds.get(2).text());
+				carDetails.put("notes", tds.get(3).text());
+				carDetails.put("assembly", tds.get(4).text());
+			}
+		}
+		/*for(Element td : tds)
+		{
+			carDetails.put("imgSrc", a.attr("src"));
+		}*/
+		
+		carList.add(carDetails);
+		System.out.println("map ::"+carList);
+
+}
+}

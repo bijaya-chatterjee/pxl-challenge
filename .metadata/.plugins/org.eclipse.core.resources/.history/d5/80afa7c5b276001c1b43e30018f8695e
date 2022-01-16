@@ -1,0 +1,22 @@
+package com.challenge.crawler.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class AutomobileInfo implements Comparable{
+	
+	private String name;
+	private String prodYear;
+	private String sales;
+	private String notes;
+	private String assembly;
+	private String manufacturer;
+	private String imageSource;
+	private byte[] image;
+	@Override
+	public int compareTo(AutomobileInfo auto) {
+		int value = this.name.compareTo(auto.name);
+		return value == 0 ? this.name.compareTo(auto.name) : value;
+	}
+}

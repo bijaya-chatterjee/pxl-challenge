@@ -1,0 +1,46 @@
+package com.challenge.crawler.utility;
+
+import java.io.IOException;
+import java.util.HashSet;
+
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
+
+@Component
+public class WebCrawler {
+
+	private HashSet<String> urlLink;
+
+	public WebCrawler() {
+		urlLink = new HashSet<String>();
+	}
+
+	public void getPageLinks(String URL) {
+
+		if (!urlLink.contains(URL)) {
+			try {
+				if (urlLink.add(URL)) {
+					System.out.println(URL);
+				}
+				Document doc = Jsoup.connect(URL).get();
+				Element table = doc.select("table").get(1);
+				Elements rows = table.select("tr>th");
+				for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it.
+					Element row = rows.get(i);
+					System.out.println("row " + row);
+					Elements cols = row.select("th");
+					for (int j = 0; j < cols.size(); j++) {
+						System.out.println(cols.get(j).text());
+					}
+				}
+			} catch (IOException e) {
+				System.err.println("For '" + URL + "': " + e.getMessage());
+			}
+		}
+	}
+
+}

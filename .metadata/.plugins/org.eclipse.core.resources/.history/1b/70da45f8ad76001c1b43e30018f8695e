@@ -1,0 +1,24 @@
+package webscrapping;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.challenge.crawler.service.MyWebCrawler;
+
+@SpringBootTest(classes={TestMyWebCrawler.class})
+public class TestMyWebCrawler {
+	
+	@Autowired
+	MyWebCrawler webCrawler;
+	
+	@DisplayName("Test Spring @Autowired Integration")
+    @Test
+    void testGet() {
+        assertEquals(517, webCrawler.getAutomobileDetails().size());
+    }
+
+}

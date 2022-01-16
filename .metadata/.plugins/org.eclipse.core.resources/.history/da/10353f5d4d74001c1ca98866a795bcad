@@ -1,0 +1,8 @@
+package com.challenge.crawler.model;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class MainService {
+
+}

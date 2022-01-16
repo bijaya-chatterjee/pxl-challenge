@@ -1,0 +1,110 @@
+package com.challenge.crawler.component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.challenge.crawler.model.Automobile;
+import com.challenge.crawler.repo.AutomobileRepository;
+
+@Component
+public class WebCrawler {
+	
+	@Autowired
+	AutomobileRepository autoRepo;
+
+	private HashSet<String> urlLink;
+
+	public WebCrawler() {
+		urlLink = new HashSet<String>();
+	}
+
+	public void getPageLinks(String URL) {
+
+		if (!urlLink.contains(URL)) {
+			try {
+				if (urlLink.add(URL)) {
+					System.out.println(URL);
+				}
+				Document doc = Jsoup.connect(URL).get();
+				Elements tables = doc.select("table > tbody");
+				for(Element table : tables)
+				{
+					Elements rows = table.select("tr");
+					System.out.println(" row in table ::"+rows.size());
+					for (int i = 1; i < rows.size(); i++) { // first row is the col names so skip it.
+						Element row = rows.get(i);
+						this.crawlRow(row);						
+					}
+				}
+			} catch (IOException e) {
+				System.err.println("For '" + URL + "': " + e.getMessage());
+			}
+		}
+	}
+	
+	private void crawlRow(Element row)
+	{
+		String car = null;
+		List<Automobile> carList = new ArrayList<Automobile>();
+		Automobile carDetails = null;
+		Elements ths = row.select("th");
+		System.out.println(ths.size());
+		if (ths != null && ths.size() == 1) {
+			Element carName = ths.get(0);
+			car = carName.text();
+			//carDetails.setName(carName.text());
+		}
+		if (ths != null && ths.size() == 2) {
+			Element carName = ths.get(1);
+			car = carName.text();
+			//carDetails.setName(carName.text());
+		}
+
+		carDetails = this.autoRepo.findByNameIgnoreCase(car);
+		if(carDetails == null)
+		{
+			carDetails = new Automobile();
+			carDetails.setName(car);
+			Elements images = row.select("td > div.center > div.floatnone > a > img");
+			for (Element a : images) {
+				carDetails.setImageSource(a.attr("src"));
+			}
+
+			Elements tds = row.select("td");
+			System.out.println("table cols ::" + tds.size());
+			if (tds != null && tds.size() == 3) {
+				for (int k = 0; k < tds.size(); k++) {
+					carDetails.setProdYear(tds.get(1).text());
+					carDetails.setSales(tds.get(2).text());
+				}
+			}
+			if (tds != null && tds.size() == 4) {
+				for (int k = 0; k < tds.size(); k++) {
+					carDetails.setProdYear(tds.get(1).text());
+					carDetails.setSales(tds.get(2).text());
+					carDetails.setAssembly(tds.get(3).text());
+				}
+			}
+			if (tds != null && tds.size() == 5) {
+				for (int k = 0; k < tds.size(); k++) {
+					carDetails.setProdYear(tds.get(1).text());
+					carDetails.setSales(tds.get(2).text());
+					carDetails.setNotes(tds.get(3).text());
+					carDetails.setAssembly(tds.get(4).text());
+				}
+			}
+			carList.add(carDetails);
+		}
+		
+		this.autoRepo.saveAll(carList);
+	}
+}

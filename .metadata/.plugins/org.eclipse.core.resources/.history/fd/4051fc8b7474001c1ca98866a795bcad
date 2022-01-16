@@ -1,0 +1,35 @@
+var AutoView = {
+	
+	data:{
+		items:[],
+		counter:0		
+	},
+	methods:{
+		fetchAllAutoNames: function()
+		{
+					var data = this.$data;
+				    var options = {
+		            		  headers: {'Content-Type': 'application/json'}
+		            		};
+		            var url = "/api/fetch/names";            
+		            axios.get(url,options)
+		            .then(function(response) {
+		            	data.items = response.data;
+		            })
+		            .catch(this.handleError)
+		            .then(function(response) {
+		            	data.counter--;
+		            });
+		}
+		
+	},
+	mounted: function(){
+		
+	},
+	created: function()
+	{
+		
+	}
+	
+	
+};

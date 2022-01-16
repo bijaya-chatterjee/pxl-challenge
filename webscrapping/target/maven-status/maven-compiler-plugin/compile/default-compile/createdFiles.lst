@@ -1,0 +1,5 @@
+com\challenge\crawler\App.class
+com\challenge\crawler\controller\AutoViewController.class
+com\challenge\crawler\dto\AutomobileInfo.class
+com\challenge\crawler\controller\MainController.class
+com\challenge\crawler\service\MyWebCrawler.class

@@ -1,0 +1,54 @@
+package com.challenge.crawler.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.challenge.crawler.dto.AutomobileInfo;
+import com.challenge.crawler.model.Automobile;
+import com.challenge.crawler.service.MainService;
+import com.challenge.crawler.service.MyWebCrawler;
+
+@RestController
+@RequestMapping("/api")
+public class MainController {
+	
+	@Autowired
+	MainService mainService;
+	
+	@Autowired
+	MyWebCrawler myCrawler;
+	
+	@GetMapping("/fetch/all")
+	public List<Automobile> fetchAllAutomobile()
+	{
+		return this.mainService.fetchAllAutombiles();
+		
+	}
+	
+	@GetMapping(value = "/fetch/names",produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<AutomobileInfo> fetchAutomobileNames()
+	{
+		return this.mainService.fetchNames();		
+	}
+	
+	
+	@GetMapping(value = "/details/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public AutomobileInfo fetchAutomobileNames(@PathVariable("id") Integer id)
+	{
+		return this.mainService.fetchCarDetails(id);	
+	}
+	
+	@GetMapping(value = "/fetch/all/details",produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<AutomobileInfo> fetchAllAutomobileDetails()
+	{
+		return this.myCrawler.getAutomobileDetails();
+		
+	}
+
+}

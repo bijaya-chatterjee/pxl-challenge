@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Automobile Information</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+<style>
+
+.split {
+  height: 100%;
+  width: 20%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  background-color:white;
+}
+
+.right {
+  right: 90;
+  background-color: white;
+}
+
+.center {
+  text-align: center;
+  border: 3px solid green;
+}
+
+.centered {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.centered img {
+  width: 150px;
+  border-radius: 50%;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid blue;
+  border-bottom: 16px solid blue;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#tabDetails {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tabDetails td, #tabDetails th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tabDetails tr:nth-child(even){background-color: #f2f2f2;}
+
+#tabDetails tr:hover {background-color: #ddd;}
+
+#tabDetails th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+</style>
+</head>
+<body>
+
+<div id="main-content">
+<div class="split left">
+  <div class="">    
+    <h2>Automobile List</h2><span v-if="counter > 0"><i class="loader">loading</i></span>
+   		<ul id="auto-name">
+		  <li v-for="item in items" :key="item">
+		    <a href="#" v-on:click="fetchCarDetails(item)">{{item}}</a>
+		  </li>
+		</ul>
+  </div>
+</div>
+
+<div class="split right">
+  <div class="center">
+    <h2>Details</h2>
+    <div id="details">
+    	
+    </div>
+  </div>
+</div>
+</div>
+<script>
+//AutoView.el = "#main-content";
+//var vApp = new Vue(AutoView);
+
+var vApp = new Vue({
+	el: "#main-content",
+	data:{
+		items:[],
+		counter:0,
+		details:[]
+	},
+	methods:{
+		fetchAllAutoNames: function()
+		{
+					var data = this.$data;
+				    var options = {
+		            		  headers: {'Content-Type': 'application/json'}
+		            		};
+					data.counter++;
+		            var url = "/api/fetch/names";            
+		            axios.get(url,options)
+		            .then(function(response) {
+						console.log(response);
+		            	data.items = response.data;
+		            })
+		            .catch(this.handleError)
+		            .then(function(response) {
+		            	data.counter--;
+		            });
+		},
+		fetchCarDetails: function(name)
+		{
+			var me = this;
+			var data = this.$data;
+		    var options = {
+            		  headers: {'Content-Type': 'application/json'}
+            		};
+			data.counter++;
+            var url = "/api/details/"+encodeURIComponent(name);            
+            axios.get(url,options)
+            .then(function(response) {
+				console.log(response);
+				me.createTable(response.data);
+            })
+            .catch(this.handleError)
+            .then(function(response) {
+            	data.counter--;
+            });
+		},
+		createTable: function(data)
+		{
+			var div1 = document.getElementById('details');
+			$('#details').empty();
+			var table = document.createElement('table');
+			table.id = "tabDetails";
+			for (var i = 1; i < 2; i++){
+			    var tr = document.createElement('tr');
+
+			    var image = document.createElement('td');
+			    var manufacturer = document.createElement('td');
+			    var automobile = document.createElement('td');
+			    var production = document.createElement('td');
+			    var sales = document.createElement('td');
+
+			    var imageText = document.createTextNode(data.imageSource);
+			    var manu = document.createTextNode(data.manufacturer);
+			    var auto = document.createTextNode(data.name);
+			    var prod = document.createTextNode(data.prodYear);
+			    var saleText = document.createTextNode(data.sales);
+
+			    image.appendChild(imageText);
+			    manufacturer.appendChild(manu);
+			    automobile.appendChild(auto);
+			    production.appendChild(prod);
+			   	sales.appendChild(saleText);
+			    tr.appendChild(image);
+			    tr.appendChild(manufacturer);
+			    tr.appendChild(automobile);
+			    tr.appendChild(production);
+			    tr.appendChild(sales);
+
+			    table.appendChild(tr);
+			}
+			div1.appendChild(table);			
+		}
+		
+	},
+	mounted: function(){
+		var me = this;
+		me.fetchAllAutoNames();
+	},
+	created: function()
+	{
+		
+	}
+});
+</script>
+</body>
+</html>

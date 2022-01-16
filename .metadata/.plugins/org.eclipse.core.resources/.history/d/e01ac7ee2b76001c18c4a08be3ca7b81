@@ -1,0 +1,12 @@
+package com.challenge.crawler.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyWebCrawler {
+	
+	private static String URL = "https://en.wikipedia.org/wiki/List_of_automobile_sales_by_model";
+	
+	public String automobileDetails()
+
+}

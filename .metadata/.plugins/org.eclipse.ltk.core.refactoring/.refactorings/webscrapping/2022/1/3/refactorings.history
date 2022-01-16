@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;com.challenge.crawler.utility&apos; to &apos;com.challenge.crawler.component&apos;&#x0D;&#x0A;- Original project: &apos;webscrapping&apos;&#x0D;&#x0A;- Original element: &apos;webscrapping/src/main/java/com.challenge.crawler.utility&apos;&#x0D;&#x0A;- Renamed element: &apos;webscrapping/src/main/java/com.challenge.crawler.component&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;com.challenge.crawler.utility&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src\/main\/java&lt;com.challenge.crawler.utility" name="com.challenge.crawler.component" qualified="false" references="true" stamp="1642247210601" textual="false" version="1.0"/>
+</session>

@@ -1,0 +1,36 @@
+var AutoView = {
+	
+	data:{
+		items:[],
+		counter:0		
+	},
+	methods:{
+		fetchAllAutoNames: function()
+		{
+				    var options = {
+		            		  headers: {'Content-Type': 'application/json'}
+		            		};
+		            var url = "/api/fetch/names";            
+		            axios.post(url,{mobile: data.mobileNumber,otp: data.otp}, options)
+		            .then(function(response) {
+		            	$('#errMsg1').text(response.data.message);
+		            	data.otp = null;
+						data.mobileNumber = null;
+		            })
+		            .catch(this.handleError)
+		            .then(function(response) {
+		            	data.counter--;
+		            });
+		}
+		
+	},
+	mounted: function(){
+		
+	},
+	created: function()
+	{
+		
+	}
+	
+	
+};

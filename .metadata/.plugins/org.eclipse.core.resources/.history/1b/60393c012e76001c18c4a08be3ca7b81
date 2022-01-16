@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Automobile Information</title>
+</head>
+<body>
+<h2>Welcome to Web Crawler</h2>
+<table>
+<tr>
+	<td>Name</td>
+	<td>URL</td>
+	
+</tr>
+<tr>
+	<td>Fetch ALL Automobile Information</td>
+	<td><a href="/fetch/all/details">Click Here</a></td>	
+</tr>
+<tr>
+	<td>Show All Autombiles</td>
+	<td><a href="/show">Click Here</a></td>	
+</tr>
+</table>
+</body>
+</html>

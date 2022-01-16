@@ -1,0 +1,36 @@
+var AutoView = {
+	
+	data:{
+		items:[]		
+	},
+	methods:{
+		fetchAllAutoNames: function()
+		{
+				    var options = {
+		            		  headers: {'Content-Type': 'application/json'}
+		            		};
+		            var url = "/user/register/validateOTP";            
+		            axios.post(url,{mobile: data.mobileNumber,otp: data.otp}, options)
+		            .then(function(response) {
+		            	$('#errMsg1').text(response.data.message);
+		            	data.otp = null;
+						data.mobileNumber = null;
+		            	//$('#validateModal').modal('hide');
+		            })
+		            .catch(this.handleError)
+		            .then(function(response) {
+		            	data.counter--;
+		            });
+		}
+		
+	},
+	mounted: function(){
+		
+	},
+	created: function()
+	{
+		
+	}
+	
+	
+};

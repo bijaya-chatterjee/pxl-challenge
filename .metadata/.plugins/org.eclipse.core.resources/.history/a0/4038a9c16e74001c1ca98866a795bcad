@@ -1,0 +1,28 @@
+package com.challenge.crawler.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.challenge.crawler.model.Automobile;
+import com.challenge.crawler.repo.AutomobileRepository;
+
+@Service
+public class MainService {
+	
+	@Autowired
+	AutomobileRepository autoRepo;
+	
+	
+	public void save(Automobile auto)
+	{
+		this.autoRepo.save(auto);
+	}
+	
+	public void save(List<Automobile> autoList)
+	{
+		this.autoRepo.saveAll(autoList);
+	}
+
+}
